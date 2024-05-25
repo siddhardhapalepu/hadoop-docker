@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3.9"
 x-airflow-common: &airflow-common
   image: ${AIRFLOW_IMAGE_NAME:-hadoop-base:3.3.6}
   environment:
@@ -129,9 +129,9 @@ services:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
       - POSTGRES_DB=airflow
-      - POSTGRES_PORT=5432
+      - POSTGRES_PORT=
     ports:
-      - 5432:5432
+      - 5435:5435
     networks:
       - hadoop_network
 

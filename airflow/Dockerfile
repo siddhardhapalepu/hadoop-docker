@@ -1,4 +1,6 @@
 FROM hadoop-base:3.3.6
+FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
+FROM ubuntu:20.04
 
 # Never prompt the user for choices on installation/configuration of packages
 ENV DEBIAN_FRONTEND noninteractive
@@ -21,7 +23,39 @@ ENV LC_MESSAGES en_US.UTF-8
 # Disable noisy "Handling signal" log messages:
 ENV GUNICORN_CMD_ARGS --log-level WARNING
 
+
 RUN set -ex \
+    && apt-get update -yqq \
+    && apt-get install -yqq --no-install-recommends \
+    build-essential \
+    python3 \
+    python3-dev \
+    python3-pip \
+    && pip3 install --upgrade pip \
+    && pip3 install flask-login python-nvd3 unicodecsv Flask-JWT-Extended \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /root/.cache/pip/*
+
+# Install JPype1 dependencies
+RUN apt-get update -yqq \
+    && apt-get install -yqq --no-install-recommends \
+    g++ \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /root/.cache/pip/*
+
+# Install JPype1
+RUN pip3 install JPype1
+
+RUN set -ex \
+    && apt-get update -yqq \
+    && apt-get install -yqq --no-install-recommends \
+    software-properties-common \
+    python3 \
+    python3-pip\
+    python3-setuptools \
+    pkg-config\
     && buildDeps=' \
     build-essential \
     libblas-dev \
